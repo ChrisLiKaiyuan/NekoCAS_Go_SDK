@@ -50,7 +50,10 @@ func (c *cas) Validate(ticket string) (*user, error) {
 		return nil, errors.Errorf("failed to unmarshal cas response: %v", err)
 	}
 
-	return newUser(response), nil
+	if response.Success {
+		return newUser(response), nil
+	}
+	return nil, errors.Errorf("invalid ticket: %s", ticket)
 }
 
 func newUser(resp casResponse) *user {
